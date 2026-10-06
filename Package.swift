@@ -9,14 +9,20 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "onnxruntime",
-            targets: ["onnxruntime"]
+            name: "OnnxRuntimeBridge",
+            targets: ["OnnxRuntimeBridge"]
         )
     ],
     targets: [
         .binaryTarget(
             name: "onnxruntime",
             path: "onnxruntime.xcframework"
+        ),
+        .target(
+            name: "OnnxRuntimeBridge",
+            dependencies: ["onnxruntime"],
+            path: "Sources/OnnxRuntimeBridge",
+            publicHeadersPath: "include"
         )
     ]
 )
