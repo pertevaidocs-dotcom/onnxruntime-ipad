@@ -1,0 +1,4 @@
+module OnnxRuntimeBridge {
+    header "OnnxRuntimeBridge.h"
+    export *
+}
