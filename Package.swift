@@ -9,13 +9,13 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "ONNXRuntimeiPad",
-            targets: ["ONNXRuntimeiPad"]
+            name: "onnxruntime",
+            targets: ["onnxruntime"]
         )
     ],
     targets: [
         .binaryTarget(
-            name: "ONNXRuntimeiPad",
+            name: "onnxruntime",
             path: "onnxruntime.xcframework"
         )
     ]
