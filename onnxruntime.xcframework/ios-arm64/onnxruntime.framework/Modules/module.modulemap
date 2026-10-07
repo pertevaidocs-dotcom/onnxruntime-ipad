@@ -1,5 +1,5 @@
 framework module onnxruntime {
-    umbrella header "onnxruntime_c_api.h"
+    umbrella header "onnxruntime.h"
     export *
     module * { export * }
 }
