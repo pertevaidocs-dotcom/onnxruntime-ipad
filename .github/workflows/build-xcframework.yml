@@ -1,0 +1,71 @@
+name: Build ONNX Runtime XCFramework
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare framework
+        shell: bash
+        run: |
+          set -e
+
+          SRC="onnxruntime.xcframework/ios-arm64/onnxruntime.framework"
+          OUT="$RUNNER_TEMP/onnxruntime.framework"
+
+          mkdir -p "$OUT/Headers"
+          mkdir -p "$OUT/Modules"
+
+          cp "$SRC/onnxruntime" "$OUT/onnxruntime"
+          cp "$SRC/Headers/"*.h "$OUT/Headers/"
+
+          cat > "$OUT/Headers/onnxruntime.h" <<'EOF'
+          #include "onnxruntime_c_api.h"
+          EOF
+
+          cat > "$OUT/Modules/module.modulemap" <<'EOF'
+          framework module onnxruntime {
+              umbrella header "onnxruntime.h"
+              export *
+              module * { export * }
+          }
+          EOF
+
+          cp "$SRC/Info.plist" "$OUT/Info.plist"
+
+          echo "=== Rebuilt framework ==="
+          find "$OUT" -maxdepth 2 -type f -print
+
+      - name: Create XCFramework with Xcode
+        shell: bash
+        run: |
+          set -e
+
+          rm -rf "$RUNNER_TEMP/onnxruntime-new.xcframework"
+
+          xcodebuild -create-xcframework \
+            -framework "$RUNNER_TEMP/onnxruntime.framework" \
+            -output "$RUNNER_TEMP/onnxruntime-new.xcframework"
+
+          echo "=== XCFramework ==="
+          find "$RUNNER_TEMP/onnxruntime-new.xcframework" -maxdepth 4 -type f -print
+
+      - name: Zip XCFramework
+        shell: bash
+        run: |
+          cd "$RUNNER_TEMP"
+          ditto -c -k --sequesterRsrc --keepParent \
+            onnxruntime-new.xcframework \
+            onnxruntime-new.xcframework.zip
+
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: onnxruntime-new-xcframework
+          path: ${{ runner.temp }}/onnxruntime-new.xcframework.zip
