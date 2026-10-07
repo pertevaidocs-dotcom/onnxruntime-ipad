@@ -16,7 +16,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "onnxruntime",
-            path: "onnxruntime.xcframework"
+            path: "onnxruntime-rebuilt.xcframework"
         )
     ]
 )
