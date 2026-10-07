@@ -42,12 +42,6 @@ let package = Package(
         .binaryTarget(
             name: "onnxruntime",
             path: "onnxruntime.xcframework"
-        ),
-        .target(
-            name: "OnnxRuntimeBridge",
-            dependencies: ["onnxruntime"],
-            path: "Sources/OnnxRuntimeBridge",
-            publicHeadersPath: "include"
         )
     ],
     cxxLanguageStandard: .cxx17
